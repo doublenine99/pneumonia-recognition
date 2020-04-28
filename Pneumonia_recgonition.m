@@ -5,6 +5,8 @@ clear; clc; close all;
 figure(1)
 % I = imread('good.png');
 I = rgb2gray(imread('middle.png'));
+I = (imread('rs_00000982_000.png'));
+
 subplot(1, 4, 1); imshow(I); title('Original Image');
 % remove the coutour part
 mask = zeros(size(I));
