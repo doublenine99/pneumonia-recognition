@@ -5,19 +5,27 @@ clear; clc; close all;
 
 I = imread('good.png');
 % I = rgb2gray(imread('middle.png'));
-% I = (imread('bad.png'));
+I = (imread('bad.png'));
 
-
-
-[counts,x] = imhist(I,16);
+% I = imadjust(I, [0.7 1]);
+% figure
+% imshow(I); title('enhance contrast'); axis on;
+  
+[counts,x] = imhist(I,30);
 stem(x,counts)
 T = otsuthresh(counts);
 BW = imbinarize(I,T);
+% size(BW)
+inversed = (255) - (BW .* 255);
 figure
-imshow(BW)
+imshow(inversed); axis on;
 
 
-BW = edge(BW, "Prewitt");
+% white = I < 150;
+% figure
+% imshow(white);
+
+BW = edge(BW, "Prewitt"); 
 figure
 imshow(BW)
 
