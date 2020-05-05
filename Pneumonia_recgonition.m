@@ -5,7 +5,7 @@ clear; clc; close all;
 figure(1)
 % I = imread('good.png');
 I = rgb2gray(imread('middle.png'));
-I = (imread('rs_00000982_000.png'));
+% I = (imread('bad.png'));
 
 subplot(1, 4, 1); imshow(I); title('Original Image');
 % remove the coutour part
@@ -31,13 +31,13 @@ subplot(1, 4, 2); imshow(I); title('remove contour');
 % I = imadjust(I, [0.2 1]);
 subplot(1, 4, 3); imshow(I); title('enhance contrast'); axis on;
 
-[L, Centers] = imsegkmeans(I, 2);
+[L, Centers] = imsegkmeans(I,3);
 B = labeloverlay(I, L);
 % subplot(1, 4, 4); imshow(B); title('Using K means to segment')
 gray = rgb2gray(B);
 subplot(1, 4, 4); imshow(gray); title('K means to segment')
 
-figure
+% figure
 
 % subplot(1, 4, 1); imhist(I); title('');
 % BWc1 = imclearborder(B);
