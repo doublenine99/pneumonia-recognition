@@ -1,16 +1,28 @@
 clear; clc; close all;
-normal_path =  'C:\Users\pjj85\OneDrive - UW-Madison\2020 Spring\CS 567\567 final project\validation\NORMAL\';
 
-ratio_vector = calculate_ratio(normal_path)
+normal_path = 'C:\Users\pjj85\OneDrive - UW-Madison\2020 Spring\CS 567\567 final project\validation\NORMAL\';
+% normal_path = 'C:\Users\pjj85\OneDrive - UW-Madison\2020 Spring\CS 567\567 final project\test\NORMAL\';
+phe_path = 'C:\Users\pjj85\OneDrive - UW-Madison\2020 Spring\CS 567\567 final project\validation\PNEUMONIA\';
+% phe_path = 'C:\Users\pjj85\OneDrive - UW-Madison\2020 Spring\CS 567\567 final project\test\PNEUMONIA\';
 
-function [ratios] = calculate_ratio(path)
+normal_vector = calculate_ratio(normal_path)
+m = mean(normal_vector)
+sd = std(normal_vector)
+
+pne_vector = calculate_ratio(phe_path)
+% Z-test
+pred = predict(pne_vector, m, sd)
+acc = pred ./ size(pne_vector, 1)
+
+function [ratio_vector] = calculate_ratio(path)
 
     all_images = dir([path '*.jpeg']);
-    ratios = zeros(size(all_images));
+    % size(all_images)
+    % ratio_vector = zeros(size(all_images));
+    % ratio_vector = zeros(size(all_images));
 
-
-    % size(ratios)
-    for K = 1:size(all_images) 
+    for K = 1:size(all_images)
+    % for K = 1:6
 
         I = imread([path all_images(K).name]);
         figure
@@ -71,7 +83,7 @@ function [ratios] = calculate_ratio(path)
 
         subplot(1, 5, 4); imshow(mask_new); title('After region growing'); axis on;
 
-        BW = imfill(mask_new,  'holes');
+        BW = imfill(mask_new, 'holes');
         subplot(1, 5, 5); imshow(BW); title('After filling'); axis on;
         filtered_lung_size = sum(BW(:));
         left_boundary = 500;
@@ -105,7 +117,22 @@ function [ratios] = calculate_ratio(path)
 
         estimated_lung_area = (right_boundary - left_boundary) * (bottom_boundary - up_boundary);
         ratio = filtered_lung_size / estimated_lung_area;
-        ratios(K,:) = ratio;    
+
+        if ratio > 0.5 || ratio < 0.2
+            ratio_vector(K, :) = mean(ratio_vector);
+        else
+            ratio_vector(K, :) = ratio;
+        end
+
     end
-    
+
+end
+
+function pred = predict(x, mean, sigma)
+    pred = 0;
+
+    for i = 1:size(x, 1)
+        pred = pred + ztest(x(i), mean, sigma, 'Alpha', 0.99);
+    end
+
 end
