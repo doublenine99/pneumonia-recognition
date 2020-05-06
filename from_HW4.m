@@ -10,7 +10,7 @@ bad = imread('bad.png');
 
 path =  'C:\Users\pjj85\OneDrive - UW-Madison\2020 Spring\CS 567\567 final project\validation\NORMAL\';
 normal_files = dir([path '*.jpeg']);
-I = imread([path normal_files(1).name]);
+I = imread([path normal_files(3).name]);
 
 % path =  'C:\Users\pjj85\OneDrive - UW-Madison\2020 Spring\CS 567\567 final project\validation\PNEUMONIA\';
 % pne_files = dir([path '*.jpeg']);
@@ -21,21 +21,19 @@ row_scale = (300 / size(I, 1));
 col_sclae = 400 / size(I, 2);
 I = imresize(I, [300 400]);
 
+% TODO: could be paramlized
+% I = imadjust(I, [0.4 1]);
 
-
-% TODO: could be paramlized 
-I = imadjust(I, [0.4 1]);
-
+I =imadjust(I, [0.4 0.8], [], 0.9);
 
 figure
 imshow(I); title('enhance contrast'); axis on;
-% TODO: could be paramlized 
+% TODO: could be paramlized
 [counts, x] = imhist(I, 100);
 T = otsuthresh(counts);
-T = graythresh(I)
+% T = graythresh(I)
 BW = imbinarize(I, T);
 % BW = imbinarize(I, 'adaptive');
-
 
 figure;
 subplot(2, 2, 1);
@@ -54,11 +52,13 @@ mask_new = mask_old;
 
 % left lung seed
 mask_new(100, 150) = 1; %Seed
-mask_new(150,120) = 1;   %Seed
+mask_new(150, 120) = 1; %Seed
 mask_new(200, 60) = 1; %Seed
 % right lung seed
 mask_new(70, 230) = 1; %Seed
-mask_new(110,240) = 1;   %Seed
+mask_new(100, 260) = 1; %Seed
+mask_new(110, 240) = 1; %Seed
+mask_new(140, 280) = 1; %Seed
 mask_new(200, 310) = 1; %Seed
 
 % mask_new(130,240) = 1;   %Seed
@@ -82,6 +82,7 @@ while (mask_size_old ~= mask_size_new)
         end
 
     end
+
     mask_size_new = sum(mask_new(:));
 end
 
@@ -97,7 +98,7 @@ BW = imfill(mask_new,  'holes');
 figure
 imshow(BW); title("after filled")
 
-filtered_lung_size = sum(BW(:))
+filtered_lung_size = sum(BW(:));
 
 left_boundary = 500;
 right_boundary = 0;
@@ -128,10 +129,10 @@ for row = 1:size(BW, 1)
 
 end
 
-left_boundary 
-right_boundary
-up_boundary 
-bottom_boundary 
+% left_boundary
+% right_boundary
+% up_boundary
+% bottom_boundary
 
-estimated_lung_area = (right_boundary - left_boundary) * (bottom_boundary - up_boundary)
+estimated_lung_area = (right_boundary - left_boundary) * (bottom_boundary - up_boundary);
 ratio = filtered_lung_size / estimated_lung_area
