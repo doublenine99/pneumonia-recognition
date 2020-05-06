@@ -1,14 +1,18 @@
+clear; clc; close all;
 normal_path =  'C:\Users\pjj85\OneDrive - UW-Madison\2020 Spring\CS 567\567 final project\validation\NORMAL\';
 
-a = calculate_ratio(normal_path);
+ratio_vector = calculate_ratio(normal_path)
 
-function [ratio_vector] = calculate_ratio(path)
+function [ratios] = calculate_ratio(path)
 
     all_images = dir([path '*.jpeg']);
-    ratio_vector = 1:size(all_images);
+    ratios = zeros(size(all_images));
 
-    for i = 1:size(all_images)
-        I = imread([path all_images(i).name]);
+
+    % size(ratios)
+    for K = 1:size(all_images) 
+
+        I = imread([path all_images(K).name]);
         figure
 
         %%   rescale the image
@@ -101,7 +105,7 @@ function [ratio_vector] = calculate_ratio(path)
 
         estimated_lung_area = (right_boundary - left_boundary) * (bottom_boundary - up_boundary);
         ratio = filtered_lung_size / estimated_lung_area;
-        ratio_vector(i) = ratio
+        ratios(K,:) = ratio;    
     end
-
+    
 end
